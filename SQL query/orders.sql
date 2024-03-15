@@ -13,6 +13,16 @@ SELECT
 	SUM(Quantity) AS total_items_ordered
 FROM Sales.OrderItem
 
+--Customers that didnt placed any orders 
+SELECT
+	a.CustomerID,
+	FirstName,
+	LastName
+FROM Sales.Customer a
+LEFT JOIN Sales.[Order] b on a.CustomerID = b.CustomerID
+WHERE b.[Status] IS NULL
+GROUP BY a.CustomerID, FirstName, LastName
+
 --Years with the corresponding count of items ordered for each year
 SELECT
 	YEAR(b.OrderDate) AS [Year],
@@ -21,20 +31,35 @@ FROM Sales.OrderItem a
 JOIN Sales.[Order] b ON a.OrderID = b.OrderID
 GROUP BY YEAR(b.OrderDate)
 
+--customer id along with the corresponding count of orders for each customer who placed orders for products with a total value 4000, ordered descending
+SELECT 
+	 CustomerID,
+	 COUNT(CustomerID) as orders_made
+FROM Sales.[Order]
+WHERE EXISTS (
+				SELECT OrderID
+				FROM Sales.OrderItem
+				WHERE Sales.OrderItem.OrderID = Sales.[Order].CustomerID
+				AND OrderTotal > 4000
+			)
+GROUP BY CustomerID
+ORDER BY orders_made DESC
+
+--categorizing shipping status of orders based on the difference in days between the order date and the shipped date
+SELECT
+	OrderID,
+	StoreID,
+	CASE
+		WHEN DATEDIFF(DAY, OrderDate, ShippedDate) is null THEN 'not shipped'
+		WHEN DATEDIFF(DAY, OrderDate, ShippedDate) = 1 THEN 'shipped quickly'
+		ELSE 'long shipping time'
+	END AS shipping_status
+FROM Sales.[Order]
+
 --Average discount
 SELECT
 	AVG(ListPrice * Discount) AS avg_discount
 FROM Sales.OrderItem
-
---Customers that didnt placed any orders 
-SELECT
-	a.CustomerID,
-	FirstName,
-	LastName
-FROM Sales.Customer a
-LEFT JOIN Sales.[Order] b on a.CustomerID = b.CustomerID
-WHERE b.[Status] is null
-GROUP BY a.CustomerID, FirstName, LastName
 
 --Customers who placed most orders (with window ranking function)
 SELECT

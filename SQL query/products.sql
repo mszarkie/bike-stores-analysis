@@ -3,7 +3,7 @@ SELECT TOP 1000
 	*
 FROM Production.Product
 
---Products by brand name ordered descending
+--Products count by brand name ordered descending
 SELECT
 	b.Name AS brand_name,
 	COUNT(*) AS total_count
@@ -18,6 +18,12 @@ SELECT
 	COUNT(*) AS total_count
 FROM Production.Product
 GROUP BY ModelYear
+
+--product id with its name without production year in name
+SELECT
+	ProductID,
+	TRIM(LEFT(Name, CHARINDEX('- 2', Name) - 1))
+FROM Production.Product
 
 --Products with 2005 model year which list price is higher than average list price
 SELECT

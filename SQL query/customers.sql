@@ -3,6 +3,14 @@ SELECT TOP 100
 	*
 FROM Sales.Customer
 
+--retrieves CustomerID along with credentials, favoring phone number, but defaulting to email if phone number is null.
+SELECT
+	CustomerID,
+	FirstName,
+	LastName,
+	ISNULL(Phone, Email) AS contact_info
+FROM Sales.Customer
+
 --ID of clients which order status is 3
 SELECT
 	a.CustomerID
