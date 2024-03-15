@@ -7,18 +7,19 @@ In the "SQL queries" folder, you'll find queries categorized accordingly.
 I've utilized various techniques in my queries, including:
 <br>
 * Common Table Expressions (CTE)
-* Window Rank Functions
+* Window Functions
 * Subqueries
-* JOIN family
+* JOINs
+* Predicates
   
- Some of the functions I've used include:
+Functions that i've used:
 
 * RANK()
 * SUM(), AVG(), COUNT(), MIN(), MAX()
-* CONCAT(), FORMAT()
+* CONCAT(), FORMAT(), LEFT(), TRIM(), CHARINDEX(), LOWER()
 * DATEDIFF(), YEAR(), MONTH(), DAY()
-* LOWER()
-
+* ISNULL()
+* CASE
 ## Data to Download
 In the "Downloads" folder, you'll find the data that I analyzed.
 <br><br>
