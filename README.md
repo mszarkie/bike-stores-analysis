@@ -10,16 +10,20 @@ I've utilized various techniques in my queries, including:
 * Window Functions
 * Subqueries
 * JOINs
+* Views
 * Predicates
   
 Functions that i've used:
 
-* RANK()
-* SUM(), AVG(), COUNT(), MIN(), MAX()
-* CONCAT(), FORMAT(), LEFT(), TRIM(), CHARINDEX(), LOWER()
-* DATEDIFF(), YEAR(), MONTH(), DAY()
-* ISNULL()
 * CASE
+*  RANK()
+* SUM(), AVG(), COUNT(), MIN(), MAX(), ROUND(), FLOOR()
+* CONCAT(), FORMAT(), LEFT(), TRIM(), CHARINDEX(), LOWER(), CONVERT()
+* DATEDIFF(), GETDATE(), YEAR(), MONTH(), DAY()
+* ISNULL(), IIF()
+* DISTINCT()
+
+
 ## Data to Download
 In the "Downloads" folder, you'll find the data that I analyzed.
 <br><br>
