@@ -22,7 +22,7 @@ GROUP BY ModelYear
 --product id with its name without production year in name
 SELECT
 	ProductID,
-	TRIM(LEFT(Name, CHARINDEX('- 2', Name) - 1))
+	TRIM(LEFT(Name, CHARINDEX('- 2', Name) - 1)) AS product_name
 FROM Production.Product
 
 --Products with 2005 model year which list price is higher than average list price
