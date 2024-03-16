@@ -1,9 +1,9 @@
 --Total Revenue
 SELECT
-	FORMAT(SUM(OrderTotal), 'C2') AS total_revenue
+	FORMAT(FLOOR(SUM(OrderTotal)), 'C2') AS total_revenue
 FROM Sales.[Order]
 
---Revenue by year
+--Total revenue by year
 ;with base AS
 (
 SELECT
@@ -15,6 +15,23 @@ GROUP BY YEAR(OrderDate)
 SELECT 
 	[Year],
 	FORMAT(Revenue, 'C2') AS revenue
+FROM base
+ORDER BY [Year]
+
+--Total revenue by year with categorizing based on whether revenue for year is greater than te average revenue across all years
+;with base AS
+(
+SELECT
+	YEAR(OrderDate) AS [Year],
+	SUM(OrderTotal) AS Revenue,
+	AVG(SUM(OrderTotal)) OVER () AS AvgRevenue
+FROM Sales.[Order]
+GROUP BY YEAR(OrderDate)
+)
+SELECT 
+	[Year],
+	FORMAT(Revenue, 'C2') AS revenue,
+	IIF(Revenue > AvgRevenue, 'Good Year', 'Bad Year') AS year_performance
 FROM base
 ORDER BY [Year]
 

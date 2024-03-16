@@ -1,5 +1,5 @@
 --Check how data looks like
-SELECT TOP 100
+SELECT TOP 1000
 	*
 FROM Sales.[Order]
 
@@ -13,6 +13,16 @@ SELECT
 	SUM(Quantity) AS total_items_ordered
 FROM Sales.OrderItem
 
+--Customers that didnt placed any orders 
+SELECT
+	a.CustomerID,
+	FirstName,
+	LastName
+FROM Sales.Customer a
+LEFT JOIN Sales.[Order] b on a.CustomerID = b.CustomerID
+WHERE b.[Status] IS NULL
+GROUP BY a.CustomerID, FirstName, LastName
+
 --Years with the corresponding count of items ordered for each year
 SELECT
 	YEAR(b.OrderDate) AS [Year],
@@ -21,22 +31,37 @@ FROM Sales.OrderItem a
 JOIN Sales.[Order] b ON a.OrderID = b.OrderID
 GROUP BY YEAR(b.OrderDate)
 
+--customer id along with the corresponding count of orders for each customer who placed orders for products with a total value 4000, ordered descending
+SELECT 
+	 CustomerID,
+	 COUNT(CustomerID) as orders_made
+FROM Sales.[Order]
+WHERE EXISTS (
+				SELECT OrderID
+				FROM Sales.OrderItem
+				WHERE Sales.OrderItem.OrderID = Sales.[Order].CustomerID
+				AND OrderTotal > 4000
+			)
+GROUP BY CustomerID
+ORDER BY orders_made DESC
+
+--categorizing shipping status of orders based on the difference in days between the order date and the shipped date
+SELECT
+	OrderID,
+	StoreID,
+	CASE
+		WHEN DATEDIFF(DAY, OrderDate, ShippedDate) is null THEN 'not shipped'
+		WHEN DATEDIFF(DAY, OrderDate, ShippedDate) = 1 THEN 'shipped quickly'
+		ELSE 'long shipping time'
+	END AS shipping_status
+FROM Sales.[Order]
+
 --Average discount
 SELECT
-	AVG(ListPrice * Discount) AS avg_discount
+	ROUND(AVG(ListPrice * Discount), 2) AS avg_discount
 FROM Sales.OrderItem
 
---Customers that didnt placed any orders 
-SELECT
-	a.CustomerID,
-	FirstName,
-	LastName
-FROM Sales.Customer a
-LEFT JOIN Sales.[Order] b on a.CustomerID = b.CustomerID
-WHERE b.[Status] is null
-GROUP BY a.CustomerID, FirstName, LastName
-
---Customers who placed most orders (with window ranking function)
+--Customers who placed most orders
 SELECT
 	CONCAT(FirstName, ' ', LastName) AS full_name,
 	COUNT(*) AS orders_made,
@@ -54,11 +79,11 @@ JOIN Sales.Customer b ON a.CustomerID = b.CustomerID
 WHERE YEAR(OrderDate) = 2009
 AND MONTH(OrderDate) BETWEEN 1 AND 3
 
---Most recent and second most recent purchase dates for customers with at least 2 orders
+--Most recent and second most recent purchase dates for customers with at least 2 orders PLUS data type convert to dd/mm/yyyy
 SELECT
 	a.CustomerID,
-	MAX(a.OrderDate) AS most_recent_order,
-	MAX(b.OrderDate) AS second_recent_order
+	CONVERT(varchar, MAX(a.OrderDate), 103) AS most_recent_order,
+	CONVERT(varchar, MAX(b.OrderDate), 103) AS second_recent_order
 FROM Sales.[Order] a
 JOIN Sales.[Order] b ON a.CustomerID = b.CustomerID
 AND a.OrderDate > b.OrderDate
@@ -105,3 +130,17 @@ WHERE b.BrandID IN
 	WHERE Name like 'Trek')
 GROUP BY a.ProductID, b.Name, a.ListPrice
 ORDER BY sold_count DESC
+
+--difference in years between last order and today's date
+SELECT
+	DATEDIFF(YEAR, MAX(OrderDate), GETDATE())
+FROM Sales.[Order]
+
+--create view with orders from year 2009
+CREATE VIEW orders_2009 AS
+SELECT
+	*
+FROM Sales.[Order]
+WHERE OrderDate BETWEEN '2009-01-01' AND '2009-12-31'
+
+SELECT * FROM orders_2009
