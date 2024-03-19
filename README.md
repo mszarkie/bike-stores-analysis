@@ -23,7 +23,9 @@ Functions that i've used:
 * ISNULL(), IIF()
 * DISTINCT()
 
-
+## Power BI
+In the "Power BI" folder, you'll find screen of report that I have made and source file.
+<br><br>
 ## Data to Download
 In the "Downloads" folder, you'll find the data that I analyzed.
 <br><br>
